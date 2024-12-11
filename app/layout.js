@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Link from 'next/link'
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,7 +23,27 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <div className="flex flex-col min-h-screen">
+          <header className="bg-green-600 text-white">
+            <div className="container mx-auto px-4 py-6">
+              <nav className="flex justify-between items-center">
+                <Link href="/" className="text-2xl font-bold">Green Guardian</Link>
+                <ul className="flex space-x-4">
+                  <li><Link href="/plant-name" className="hover:text-green-200">Plant Name</Link></li>
+                  <li><Link href="/plant-disease" className="hover:text-green-200">Plant Disease</Link></li>
+                </ul>
+              </nav>
+            </div>
+          </header>
+          <main className="flex-grow container mx-auto px-4 py-8">
+            {children}
+          </main>
+          <footer className="bg-green-600 text-white">
+            <div className="container mx-auto px-4 py-6 text-center">
+              <p>&copy; 2024 Green Guardian. All rights reserved.</p>
+            </div>
+          </footer>
+        </div>
       </body>
     </html>
   );

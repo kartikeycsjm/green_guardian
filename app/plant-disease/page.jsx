@@ -1,12 +1,32 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
+import * as tmImage from '@teachablemachine/image'
 
 export default function PlantDisease() {
   const [file, setFile] = useState(null)
   const [preview, setPreview] = useState(null)
   const [result, setResult] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [model, setModel] = useState(null)
+
+  const MODEL_URL = 'https://teachablemachine.withgoogle.com/models/cgoeVSh-s/'
+
+  // Load the model on component mount
+  useEffect(() => {
+    async function loadModel() {
+      try {
+        const modelURL = `${MODEL_URL}model.json`
+        const metadataURL = `${MODEL_URL}metadata.json`
+        const loadedModel = await tmImage.load(modelURL, metadataURL)
+        setModel(loadedModel)
+      } catch (error) {
+        console.error('Error loading model:', error)
+      }
+    }
+    loadModel()
+  }, [])
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files?.[0]
@@ -18,19 +38,48 @@ export default function PlantDisease() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (file) {
-      // Simulate API call for detection (replace with actual API call)
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      setResult({
-        disease: 'Powdery Mildew',
-        confidence: 87,
-        treatments: [
-          'Remove and destroy infected plant parts',
-          'Improve air circulation around plants',
-          'Apply fungicide as directed'
-        ]
-      })
+    if (file && model) {
+      setIsLoading(true)
+      try {
+        // Use the standard JavaScript Image object here
+        const img = new window.Image()
+        img.src = preview
+        img.onload = async () => {
+          const predictions = await model.predict(img)
+          const bestPrediction = predictions.reduce((best, current) =>
+            current.probability > best.probability ? current : best
+          )
+
+          setResult({
+            disease: bestPrediction.className,
+            confidence: (bestPrediction.probability * 100).toFixed(2),
+            treatments: getTreatmentRecommendations(bestPrediction.className)
+          })
+        }
+      } catch (error) {
+        console.error('Error detecting plant disease:', error)
+      } finally {
+        setIsLoading(false)
+      }
     }
+  }
+
+  // Mock treatment recommendations
+  const getTreatmentRecommendations = (disease) => {
+    const treatments = {
+      'Powdery Mildew': [
+        'Remove and destroy infected plant parts',
+        'Improve air circulation around plants',
+        'Apply fungicide as directed'
+      ],
+      'Healthy Plant': ['No action needed; your plant is healthy!'],
+      'Other Disease': [
+        'Inspect and isolate the affected plant',
+        'Consult a local agriculture specialist',
+        'Consider fungicide or pesticide treatment'
+      ]
+    }
+    return treatments[disease] || ['No recommendations available']
   }
 
   return (
@@ -52,10 +101,10 @@ export default function PlantDisease() {
           </div>
           <button
             type="submit"
-            className="w-full bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors"
-            disabled={!file}
+            className="w-full bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+            disabled={!file || isLoading}
           >
-            Detect Plant Disease
+            {isLoading ? 'Detecting...' : 'Detect Plant Disease'}
           </button>
         </form>
         {preview && (
@@ -84,4 +133,3 @@ export default function PlantDisease() {
       </div>
   )
 }
-

@@ -25,7 +25,7 @@ export default function RootLayout({ children }) {
       >
         <div className="flex flex-col min-h-screen">
           <header className="bg-green-600 text-white">
-            <div className="container mx-auto px-4 py-6">
+            <div className="container mx-auto px-4 py-5">
               <nav className="flex justify-between items-center">
                 <Link href="/" className="text-xl font-bold">Green Guardian</Link>
                 <ul className="flex space-x-4 text-sm">

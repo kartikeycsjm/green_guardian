@@ -67,20 +67,42 @@ export default function PlantDisease() {
   // Mock treatment recommendations
   const getTreatmentRecommendations = (disease) => {
     const treatments = {
-      'Powdery Mildew': [
-        'Remove and destroy infected plant parts',
-        'Improve air circulation around plants',
-        'Apply fungicide as directed'
+      'Potato___Early_blight': [
+        'Remove and destroy infected leaves',
+        'Avoid overhead watering to reduce leaf wetness',
+        'Apply fungicide containing chlorothalonil or mancozeb'
       ],
-      'Healthy Plant': ['No action needed; your plant is healthy!'],
-      'Other Disease': [
-        'Inspect and isolate the affected plant',
-        'Consult a local agriculture specialist',
-        'Consider fungicide or pesticide treatment'
+      'Potato___healthy': ['No action needed; your potato plant is healthy!'],
+      'Potato___Late_blight': [
+        'Remove and destroy infected plants immediately',
+        'Ensure proper drainage to reduce soil moisture',
+        'Use fungicides like copper-based sprays or metalaxyl'
+      ],
+      'Tomato_Bacterial_spot': [
+        'Remove infected leaves and avoid working with wet plants',
+        'Apply copper-based bactericide sprays regularly',
+        'Ensure proper crop rotation and clean seeds before planting'
+      ],
+      'Tomato_Early_blight': [
+        'Remove infected leaves and improve air circulation',
+        'Apply fungicides containing chlorothalonil or copper',
+        'Avoid wetting the foliage during watering'
+      ],
+      'Tomato_healthy': ['No action needed; your tomato plant is healthy!'],
+      'Tomato_Late_blight': [
+        'Destroy infected plants and remove nearby weeds',
+        'Apply fungicides such as chlorothalonil or copper-based sprays',
+        'Plant resistant tomato varieties in the future'
+      ],
+      'Tomato__Tomato_YellowLeaf__Curl_Virus': [
+        'Control whiteflies, the primary carriers of this virus, with insecticides',
+        'Remove infected plants to prevent further spread',
+        'Use virus-resistant tomato varieties and reflective mulch'
       ]
     }
     return treatments[disease] || ['No recommendations available']
   }
+  
 
   return (
       <div className="max-w-2xl mx-auto">

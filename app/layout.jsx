@@ -29,7 +29,6 @@ export default function RootLayout({ children }) {
               <nav className="flex justify-between items-center">
                 <Link href="/" className="text-xl font-bold">Green Guardian</Link>
                 <ul className="flex space-x-4 text-sm">
-                  <li><Link href="/plant-name" className="hover:text-green-200">Plant Name</Link></li>
                   <li><Link href="/plant-disease" className="hover:text-green-200">Plant Disease</Link></li>
                 </ul>
               </nav>

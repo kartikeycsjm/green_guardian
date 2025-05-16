@@ -1,1 +1,1 @@
-export const MODEL_URL = 'https://teachablemachine.withgoogle.com/models/cgoeVSh-s/'
+export const MODEL_URL = "https://teachablemachine.withgoogle.com/models/HeCCq9tna/"

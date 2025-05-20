@@ -1,15 +1,17 @@
 'use client'
-
+import { Loader2 } from "lucide-react";
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import * as tmImage from '@teachablemachine/image'
 import { MODEL_URL } from '../utils/links'
+import { useRouter } from 'next/navigation'
 export default function PlantDisease() {
   const [file, setFile] = useState(null)
   const [preview, setPreview] = useState(null)
   const [result, setResult] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const [model, setModel] = useState(null)
+  const router = useRouter()
 
   const MODEL_UR = MODEL_URL
 
@@ -37,34 +39,34 @@ export default function PlantDisease() {
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (file && model) {
-      setIsLoading(true)
+      setIsLoading(true);
       try {
-        // Use the standard JavaScript Image object here
-        const img = new window.Image()
-        img.src = preview
+        const img = new window.Image();
+        img.src = preview;
         img.onload = async () => {
-          const predictions = await model.predict(img)
+          const predictions = await model.predict(img);
           const bestPrediction = predictions.reduce((best, current) =>
             current.probability > best.probability ? current : best
-          )
+          );
 
-          setResult({
-            disease: bestPrediction.className,
-            confidence: (bestPrediction.probability * 100).toFixed(2),
-            treatments: getTreatmentRecommendations(bestPrediction.className)
-          })
-        }
+          setTimeout(() => {
+            setResult({
+              disease: bestPrediction.className,
+              confidence: (bestPrediction.probability * 100).toFixed(2),
+              treatments: getTreatmentRecommendations(bestPrediction.className)
+            });
+            setIsLoading(false); // Stop loading after 2 seconds
+          }, 3000);
+          router.push('#detected');
+        };
       } catch (error) {
-        console.error('Error detecting plant disease:', error)
-      } finally {
-        setIsLoading(false)
+        console.error('Error detecting plant disease:', error);
+        setIsLoading(false); // In case prediction setup fails before image loads
       }
     }
-  }
-
-  // Mock treatment recommendations
+  };
   const getTreatmentRecommendations = (disease) => {
     const treatments = {
       // Apple
@@ -215,7 +217,7 @@ export default function PlantDisease() {
         </div>
       )}
       {result && (
-        <div className="bg-white p-6 rounded-lg shadow-md">
+        <div id="detected" className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-2xl font-semibold mb-4">Detection Result</h2>
           <p className="mb-2">
             <span className="font-semibold">Detected Disease:</span> {result.disease}
@@ -231,6 +233,24 @@ export default function PlantDisease() {
           </ul>
         </div>
       )}
+      {isLoading && <Loading />}
     </div>
   )
 }
+
+
+const Loading = () => {
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center">
+      <div className="w-[400px] max-w-[90%] p-8 bg-white rounded-2xl shadow-2xl flex flex-col items-center text-center">
+        <Loader2 className="animate-spin text-blue-600 mb-6" size={80} />
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">Analyzing Image...</h2>
+        <p className="text-gray-600 mb-1">Hold on, we’re detecting possible diseases.</p>
+        <p className="text-gray-500">This might take a few seconds.</p>
+      </div>
+    </div>
+  );
+};
+
+
+

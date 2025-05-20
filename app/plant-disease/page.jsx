@@ -239,18 +239,37 @@ export default function PlantDisease() {
 }
 
 
+
+
+const messages = [
+  "Analyzing the image for potential diseases...",
+  "Running diagnostics with AI-powered models...",
+  "Finalizing the results. Please hold on...",
+];
+
 const Loading = () => {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % messages.length);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center">
       <div className="w-[400px] max-w-[90%] p-8 bg-white rounded-2xl shadow-2xl flex flex-col items-center text-center">
         <Loader2 className="animate-spin text-blue-600 mb-6" size={80} />
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">Analyzing Image...</h2>
-        <p className="text-gray-600 mb-1">Hold on, we’re detecting possible diseases.</p>
-        <p className="text-gray-500">This might take a few seconds.</p>
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">Detecting...</h2>
+        <p className="text-gray-600">{messages[index]}</p>
       </div>
     </div>
   );
 };
+
+
 
 
 
